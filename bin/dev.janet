@@ -19,8 +19,8 @@
     list))
 
 (defn exe-name
-  [exe]
   "On windows you have to add .bar"
+  [exe]
   (misc/cond-> exe (= (os/which) :windows) (string ".bat")))
 
 (defn watch
@@ -48,4 +48,8 @@
         (set restart false)))
     (ev/sleep 1)))
 
-(watch "janet" (path/join "hyper-present" "init.janet") "presentation.md")
+(defn main
+  [_ presentation-file]
+  (watch (exe-name "janet")
+         (path/join "hyper-present" "init.janet")
+         presentation-file))

@@ -35,7 +35,10 @@
         (let [{:chapter chapter} store]
           (when (>= (dec chapter) 0)
             (update store :chapter dec)
-            (put store :slide 0)))))))
+            (put store :slide 0)))
+        [:reload-presentation]
+        (put store :presentation
+             (parser/parse-string (slurp (store :presentation-file))))))))
 
 (def View
   "View prototype"
@@ -64,7 +67,7 @@
       [:style ``
               :root {font-size: 48px} 
               nav {z-index: 1; transition: opacity 250ms ease-in-out; font-size: 0.5rem}
-              small {font-size: 0.5rem}
+              small {font-size: 0.3rem}
               ``]]
      [:body
       {:_
@@ -75,6 +78,7 @@
           else if k is 'ArrowLeft' send previous to <nav div[data-role='slide'] a/>
           else if k is 'ArrowDown' send next to <nav div[data-role='chapter'] a/>
           else if k is 'ArrowUp' send previous to <nav div[data-role='chapter'] a/>
+          else if k is 'r' send click to <a[data-role='reload']/>
         ``}
       [:nav {:class "width:100% fixed f-row justify-content:space-between padding-inline align-items:baseline"
              :hx-swap "none"
@@ -91,12 +95,14 @@
                 ``}
        [:div {:data-role "slide"}
         [:a {:hx-trigger "click, previous" :hx-get "/previous-slide"} "<"]
-        [:small " slide "]
+        " slide "
         [:a {:hx-trigger "click, next" :hx-get "/next-slide"} ">"]]
-       [:small {:hx-get "/slide-title" :hx-swap "innerHtml" :hx-trigger "load, click, refresh from:body"}]
+       [:div
+        [:a {:hx-get "/reload-presentation" :data-role "reload"} "\u21BB "]
+        [:span {:hx-get "/slide-title" :hx-swap "innerHtml" :hx-trigger "load, click, refresh from:body"}]]
        [:div {:data-role "chapter"}
         [:a {:hx-trigger "click, previous" :hx-get "/previous-chapter"} "\u00AB"]
-        [:small " chapter "]
+        [:span " chapter "]
         [:a {:hx-trigger "click, next" :hx-get "/next-chapter"} "\u00BB"]]]
       [:main {:class "f-col fullscreen justify-content:center"
               :hx-get "/current-slide" :hx-trigger "load, click, refresh from:body"}]
@@ -147,6 +153,13 @@
   [&]
   (:current-slide <o>))
 
+(defn /reload-presentation
+  "Reloads presentation from file"
+  {:path "/reload-presentation"}
+  [&]
+  (>>> :reload-presentation)
+  (trigger-header "refresh"))
+
 (def- web-server "Template server" (httpf/server))
 (httpf/add-bindings-as-routes web-server)
 
@@ -157,10 +170,10 @@
     (eprin "HTTP server is ")
     (httpf/listen ws ip port 1)))
 
-(defn main [_ presentation]
-  (def store @{:presentation (parser/parse-string (slurp presentation))
-               :chapter 0 :slide 0 :connections @[]})
+(defn main [_ presentation-file]
+  (def store @{:presentation-file presentation-file :chapter 0 :slide 0 :connections @[]})
   (set <o> (table/setproto @{:_store store} View))
   (def supervisor (ev/chan 1024))
   (ev/go (supervise store) supervisor)
-  (ev/go (web-listener "127.0.0.1" "8000") web-server supervisor))
+  (ev/go (web-listener "127.0.0.1" "8000") web-server supervisor)
+  (ev/give supervisor [:reload-presentation]))

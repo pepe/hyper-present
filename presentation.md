@@ -1,4 +1,4 @@
-# Frontend CULS 23
+# Contemporary Frontend Winter 2023
 
 ---
 author: Josef Pospíšil
@@ -6,24 +6,24 @@ date: 2023-10-09
 title: The Intro
 ---
 
-## Contemporary Frontend
+## Contemporary Frontend Winter 2023
 
 ---
 
 ## Who am I?
 
-* @pepe | @damnpepe
+* Computer scientist
+* @pepe |@damnpepe
 * World Citizen
 * Father
 * Janet
-* Computer scientist
 
 ---
 
 ## Who are you?
 
 * Name & Origin
-* Engagement [0-2]
+* Diploma thesis
 * Experience
 
 ---
@@ -32,29 +32,35 @@ title: The Intro
 
 ---
 
-## Flyby style
+## Technique
+
+* Flyby style
+* My experiences
+* Your needs
 
 ---
 
 ## Day
 
 * Morning coffe
+* (break)
 * Talk show
+* (break)
 * Hands-on
 
 ---
 
 ## Week
 
-* Monday - Tools
-* Tuesday - Content, Presentation
+* Monday - Tools, Content
+* Tuesday - Presentation, Hypermedia
 * Wednesday - Scripting
 * Thursday - Project
 * Friday - Evaluation
 
 ---
 
-## Theory
+## Parts
 
 * Tools
 * Content
@@ -63,7 +69,7 @@ title: The Intro
 
 ---
 
-## Hands on
+## Hands On
 
 * Simple examples
 * Live projects
@@ -87,19 +93,21 @@ title: The Intro
 ## Present and script
 
 * Presentation example
-* I wil lgive HTML
+* I will give you HTML
 * You will do the rest
 
 ---
 
-## Evaluation
+## Evaluation ...
+
+... will be very biased
 
 ---
 
-## Distribution of points
+## Points' distribution
 
-* Tasks 40%
-* Project 50%
+* Tasks 20%
+* Project 70%
 * Test 10%
 
 ---
@@ -110,7 +118,7 @@ title: The Intro
 
 ## Any questions
 
-Speak now, or be silent for the week.
+Speak now, or be silent for the rest of the week.
 
 ---
 
@@ -122,10 +130,12 @@ I would love to see your works.
 
 ## Let's Go!
 
+Learn to swim
+
 ===
 ---
 author: Josef Pospíšil
-date: 2023-10-05
+date: 2023-10-09
 title: Tools
 ---
 
@@ -133,20 +143,24 @@ title: Tools
 
 ---
 
-## FOSS
+## FOSS FTW!
 
 * Free
 * OpenSource
+* Everywhere
 
 ---
 
-## Scource Controll Management
+## Source Control Management
+
+[SCM]
 
 ---
 
 ## Value
 
 * Storing
+* History
 * Collaboration
 * Not only code
 
@@ -173,7 +187,7 @@ title: Tools
 * Your work
 * OpenSource projects
 * Not only SCM
-* Live Screen
+* Hands On
 
 ---
 
@@ -181,8 +195,8 @@ title: Tools
 
 * Issues, projects
 * Pull requests
-* Static pages (Project)
-* Live Screen
+* Static pages 
+* Hands On
 
 ---
 
@@ -191,16 +205,15 @@ title: Tools
 * Commit vs Push
 * Branches
 * Pull requests vs Participants
-* Live Screen
+* Hands On
 
 ---
 
-## GitHub task
+## GitHub Task
 
 * Register
 * Follow @pepe and star
 * Create project repository
-* Break
 
 ---
 
@@ -213,6 +226,10 @@ title: Tools
 
 ---
 
+## (break)
+
+---
+
 ## Editors
 
 ---
@@ -222,22 +239,25 @@ title: Tools
 * GitHub
 * OpenSource project
 * Many packages
+* Hands On
 
 ---
 
 ## Visual Studio Code
 
+* [VSC]
 * Microsoft's take
 * Very similar to Atom
 * MS technologies
 
 ---
 
-## Packages
+## VSC Extensions
 
 * Languages
 * Processing
 * Goodies
+* Hands On
 
 ---
 
@@ -256,11 +276,11 @@ title: Tools
 
 ---
 
-## Editors task
+## Editors Task
 
 * Install application
 * HTML, CSS, JS packages
-* Break
+* (break)
 
 ---
 
@@ -268,20 +288,26 @@ title: Tools
 
 ---
 
-## Developer tools
+## Developer Tools
 
 * Firefox Nightly
 * Chrome Canary
-* Task install
+* Hands On
+
+---
+
+## Browser Task
+
+* Install
 
 ---
 
 ## node.js
 
 * JavaScript
-* More Later
 * Frontend tools
 * http-server
+* Hands On
 
 ---
 
@@ -289,14 +315,26 @@ title: Tools
 
 * Mozilla Developer Network
 * All about web & more
-* Live Screen
+* Hands On
+
+===
+---
+author: pepe
+date: 2023-10-09
+title: Hypermedia
+---
+
+## Hypermedia systems
+
+* Book
+* Code
 
 ---
 
 ## HTTP protocol
 
-* Structure
 * Evolution
+* Structure
 
 ---
 
@@ -313,14 +351,10 @@ title: Tools
 * All
 * Live Screen
 
---- 
-
-## Hypermedia systems
-
 ===
 ---
 author: Josef Pospíšil
-date: 2023-10-06
+date: 2023-10-10
 title: Content
 ---
 
@@ -419,7 +453,7 @@ title: Content
 ===
 ---
 author: Josef Pospíšil
-date: 2023-02-2!
+date: 2023-10-10
 title: Presentation
 ---
 
@@ -461,7 +495,7 @@ title: Presentation
 ## CSS
 
 * Separation
-* HTML, XML, SVG
+* HTML ,XML ,SVG
 * History
 
 ---
@@ -477,7 +511,7 @@ title: Presentation
 ## Selectors
 
 * Tags
-* Ids, classes
+* Ids ,classes
 * Pseudo
 * Live Screen
 
@@ -522,10 +556,9 @@ title: Presentation
 * Optimistic updates
 
 ===
-
 ---
 author: pepe
-date: 2023-10-07
+date: 2023-10-11
 title: Scripting
 ---
 
@@ -578,7 +611,7 @@ title: Scripting
 
 * Always JS on the end
 * Building
-* Webpack, Gulp
+* Webpack ,Gulp
 
 ---
 
@@ -608,3 +641,4 @@ title: Scripting
 ---
 
 ## Q&A
+
