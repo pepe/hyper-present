@@ -80,19 +80,19 @@
           else if k is 'ArrowUp' send previous to <nav div[data-role='chapter'] a/>
           else if k is 'r' send click to <a[data-role='reload']/>
         ``}
-      [:nav {:class "width:100% fixed f-row justify-content:space-between padding-inline align-items:baseline"
-             :hx-swap "none"
-             :_ ``
-                init wait 1s then hide me with *opacity
-                on mouseenter or refresh set :hidding to false then show me with *opacity
-                on mouseleave or refresh
-                  set :hidding to true
-                  wait 1s 
-                  if :hidding 
-                    hide me with *opacity
-                    set :hidding to false
-                  end 
-                ``}
+      [:nav
+       {:class "width:100% fixed f-row justify-content:space-between padding-inline align-items:baseline"
+        :hx-swap "none"
+        :_ ``
+           init wait 1s then hide me with *opacity
+           on mouseenter or refresh set :hidding to false then show me with *opacity
+           on mouseleave or refresh
+             set :hidding to true
+             wait 1s 
+             if :hidding 
+               hide me with *opacity
+             end 
+           ``}
        [:div {:data-role "slide"}
         [:a {:hx-trigger "click, previous" :hx-get "/previous-slide"} "<"]
         " slide "
