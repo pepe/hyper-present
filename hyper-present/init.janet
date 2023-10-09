@@ -2,7 +2,7 @@
 (import spork/htmlgen)
 (import ./parser)
 
-(var <o> nil)
+(def <o> @{})
 
 (defn >>>
   "Process command"
@@ -19,36 +19,39 @@
         [:next-slide]
         (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
               current-chapter (chapters chapter)]
-          (if (< (inc slide) (length (current-chapter :slides)))
-            (update store :slide inc)))
+          (when (< (inc slide) (length (current-chapter :slides)))
+            (update store :slide inc)
+            (ev/give channel [:refresh-slide])))
         [:previous-slide]
         (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
               current-chapter (chapters chapter)]
-          (if (>= (dec slide) 0)
-            (update store :slide dec)))
+          (when (>= (dec slide) 0)
+            (update store :slide dec)
+            (ev/give channel [:refresh-slide])))
         [:next-chapter]
         (let [{:chapter chapter :presentation {:chapters chapters}} store]
           (when (< (inc chapter) (length chapters))
             (update store :chapter inc)
-            (put store :slide 0)))
+            (put store :slide 0)
+            (ev/give channel [:refresh-slide])))
         [:previous-chapter]
         (let [{:chapter chapter} store]
           (when (>= (dec chapter) 0)
             (update store :chapter dec)
-            (put store :slide 0)))
+            (put store :slide 0)
+            (ev/give channel [:refresh-slide])))
+        [:refresh-slide]
+        (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store]
+          (merge-into <o> @{:slide-title
+                            (htmlgen/raw (string (get-in chapters [chapter :title]) " #" (inc slide)))
+                            :current-slide
+                            (htmlgen/raw
+                              (htmlgen/html (get-in chapters [chapter :slides slide])))}))
         [:reload-presentation]
-        (put store :presentation
-             (parser/parse-string (slurp (store :presentation-file))))))))
-
-(def View
-  "View prototype"
-  @{:title (fn [{:_store {:presentation presentation}}] (presentation :title))
-    :slide-title (fn [{:_store {:chapter chapter :slide slide :presentation {:chapters chapters}}}]
-                   (htmlgen/raw (string (get-in chapters [chapter :title]) " #" (inc slide))))
-    :current-slide (fn [{:_store {:chapter chapter :slide slide :presentation {:chapters chapters}}}]
-                     @[(get-in chapters [chapter :slides slide])
-                       [:small {:class "width:100% justify-content:end f-row fixed bottom padding-block-end"}
-                        (get-in chapters [chapter :date])]])})
+        (do
+          (put store :presentation
+               (parser/parse-string (slurp (store :presentation-file))))
+          (put <o> :title (get-in store [:presentation :title])))))))
 
 (defn /index
   "Root route"
@@ -61,7 +64,7 @@
       [:meta {"name" "viewport"
               "content" "width=device-width, initial-scale=1.0"}]
       [:meta {"name" "description"
-              "content" (string "Hyper Present - " (:title <o>))}]
+              "content" (string "Hyper Present - " (<o> :title))}]
       [:title "Hyper Present"]
       [:link {:rel "stylesheet" :href "https://unpkg.com/missing.css@1.1.1"}]
       [:style ``
@@ -145,13 +148,13 @@
 (defn /slide-title
   "Renders slide title"
   {:path "/slide-title"}
-  [&] (:slide-title <o>))
+  [&] (<o> :slide-title))
 
 (defn /current-slide
   "Renders current slide"
   {:path "/current-slide"}
   [&]
-  (:current-slide <o>))
+  (<o> :current-slide))
 
 (defn /reload-presentation
   "Reloads presentation from file"
@@ -172,8 +175,8 @@
 
 (defn main [_ presentation-file]
   (def store @{:presentation-file presentation-file :chapter 0 :slide 0 :connections @[]})
-  (set <o> (table/setproto @{:_store store} View))
   (def supervisor (ev/chan 1024))
   (ev/go (supervise store) supervisor)
   (ev/go (web-listener "127.0.0.1" "8000") web-server supervisor)
-  (ev/give supervisor [:reload-presentation]))
+  (ev/give supervisor [:reload-presentation])
+  (ev/give supervisor [:refresh-slide]))

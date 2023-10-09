@@ -50,6 +50,6 @@
 
 (defn main
   [_ presentation-file]
-  (watch (exe-name "janet")
+  (watch "janet"
          (path/join "hyper-present" "init.janet")
          presentation-file))
