@@ -8,7 +8,7 @@
 
 (defn parse-string
   ```
-  Parses file with the presentation slides and returns data structure with them
+  Parses file with the presentation slides and returns data structure with them as htmlgen
   ```
   [content]
   (defn <title
