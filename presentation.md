@@ -401,7 +401,6 @@ title: Content
 * History
 * Lingua Franca
 * API
-* Task - JSON example
 
 ---
 

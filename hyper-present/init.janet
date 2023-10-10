@@ -2,7 +2,9 @@
 (import spork/htmlgen)
 (import ./parser)
 
-(def <o> @{})
+(def <o>
+  "View for the handlers"
+  @{})
 
 (defn >>>
   "Process command"
@@ -15,43 +17,44 @@
   (fn [channel]
     (eprint "Supervisor is running")
     (forever
-      (match (ev/take channel)
-        [:next-slide]
-        (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
-              current-chapter (chapters chapter)]
-          (when (< (inc slide) (length (current-chapter :slides)))
-            (update store :slide inc)
-            (ev/give channel [:refresh-slide])))
-        [:previous-slide]
-        (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
-              current-chapter (chapters chapter)]
-          (when (>= (dec slide) 0)
-            (update store :slide dec)
-            (ev/give channel [:refresh-slide])))
-        [:next-chapter]
-        (let [{:chapter chapter :presentation {:chapters chapters}} store]
-          (when (< (inc chapter) (length chapters))
-            (update store :chapter inc)
-            (put store :slide 0)
-            (ev/give channel [:refresh-slide])))
-        [:previous-chapter]
-        (let [{:chapter chapter} store]
-          (when (>= (dec chapter) 0)
-            (update store :chapter dec)
-            (put store :slide 0)
-            (ev/give channel [:refresh-slide])))
-        [:refresh-slide]
-        (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store]
-          (merge-into <o> @{:slide-title
-                            (htmlgen/raw (string (get-in chapters [chapter :title]) " #" (inc slide)))
-                            :current-slide
-                            (htmlgen/raw
-                              (htmlgen/html (get-in chapters [chapter :slides slide])))}))
-        [:reload-presentation]
-        (do
-          (put store :presentation
-               (parser/parse-string (slurp (store :presentation-file))))
-          (put <o> :title (get-in store [:presentation :title])))))))
+     (match (ev/take channel)
+       [:next-slide]
+       (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
+             current-chapter (chapters chapter)]
+         (when (< (inc slide) (length (current-chapter :slides)))
+           (update store :slide inc)
+           (ev/give channel [:refresh-slide])))
+       [:previous-slide]
+       (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store
+             current-chapter (chapters chapter)]
+         (when (>= (dec slide) 0)
+           (update store :slide dec)
+           (ev/give channel [:refresh-slide])))
+       [:next-chapter]
+       (let [{:chapter chapter :presentation {:chapters chapters}} store]
+         (when (< (inc chapter) (length chapters))
+           (update store :chapter inc)
+           (put store :slide 0)
+           (ev/give channel [:refresh-slide])))
+       [:previous-chapter]
+       (let [{:chapter chapter} store]
+         (when (>= (dec chapter) 0)
+           (update store :chapter dec)
+           (put store :slide 0)
+           (ev/give channel [:refresh-slide])))
+       [:refresh-slide]
+       (let [{:chapter chapter :slide slide :presentation {:chapters chapters}} store]
+         (merge-into <o>
+                     @{:slide-title
+                       (htmlgen/raw (string (get-in chapters [chapter :title]) " #" (inc slide)))
+                       :current-slide
+                       (htmlgen/raw
+                        (htmlgen/html (get-in chapters [chapter :slides slide])))}))
+       [:reload-presentation]
+       (do
+         (put store :presentation
+              (parser/parse-string (slurp (store :presentation-file))))
+         (put <o> :title (get-in store [:presentation :title])))))))
 
 (defn /index
   "Root route"
