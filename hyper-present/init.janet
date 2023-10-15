@@ -177,7 +177,7 @@
     (httpf/listen ws ip port 1)))
 
 (defn main [_ presentation-file]
-  (def store @{:presentation-file presentation-file :chapter 0 :slide 0 :connections @[]})
+  (def store @{:presentation-file presentation-file :chapter 0 :slide 0})
   (def supervisor (ev/chan 1024))
   (ev/go (supervise store) supervisor)
   (ev/go (web-listener "127.0.0.1" "8000") web-server supervisor)
