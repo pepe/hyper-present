@@ -23,3 +23,12 @@ Watch files and restart the server on the change:
 ```
 jpm -l janet ./bin/dev.janet ./presentation.md
 ```
+
+## Plans
+
+As part of the summer semester studyblock oriented on backend development,
+I would like to add:
+
+- Roles: speaker, student
+- More multimedia
+- Janet playground
