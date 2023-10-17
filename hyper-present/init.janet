@@ -47,26 +47,29 @@
           (put store :presentation
                (parser/parse-string (slurp (store :presentation-file))))
           (put <o> :title (get-in store [:presentation :title])))
+        [:save-connection conn]
+        (update store :connections array/push conn)
         :refresh-slide
         (let [{:chapter chapter :slide slide :presentation {:title title :chapters chapters}} store]
           (merge-into
             <o>
             @{:navigation
-              (htmlgen/raw
-                (htmlgen/html
-                  @[[:div {:data-role "slide" :hx-swap "none"}
-                     [:a {:hx-trigger "click, previous" :hx-get "/previous-slide"} "<"]
-                     " " (inc slide) " "
-                     [:a {:hx-trigger "click, next" :hx-get "/next-slide"} ">"]]
-                    [:div
-                     [:a {:hx-get "/reload-presentation" :hx-swap "none" :data-role "reload"} "\u21BB "]
-                     title]
-                    [:div {:data-role "chapter" :hx-swap "none"}
-                     [:a {:hx-trigger "click, previous" :hx-get "/previous-chapter"} "\u00AB"]
-                     " " (get-in chapters [chapter :title]) " "
-                     [:a {:hx-trigger "click, next" :hx-get "/next-chapter"} "\u00BB"]]]))
-              :current-slide
-              (htmlgen/raw (htmlgen/html (get-in chapters [chapter :slides slide])))}))))))
+              @[[:div {:data-role "slide" :hx-swap "none"}
+                 [:a {:hx-trigger "click, previous" :hx-get "/previous-slide"} "<"]
+                 " " (inc slide) " "
+                 [:a {:hx-trigger "click, next" :hx-get "/next-slide"} ">"]]
+                [:div
+                 [:a {:hx-get "/reload-presentation" :hx-swap "none" :data-role "reload"} "\u21BB "]
+                 title]
+                [:div {:data-role "chapter" :hx-swap "none"}
+                 [:a {:hx-trigger "click, previous" :hx-get "/previous-chapter"} "\u00AB"]
+                 " " (get-in chapters [chapter :title]) " "
+                 [:a {:hx-trigger "click, next" :hx-get "/next-chapter"} "\u00BB"]]]
+              :current-slide (get-in chapters [chapter :slides slide])})
+          (each c (tracev (store :connections))
+            (try
+              (ev/write c "event: refresh\n\n")
+              ([e] (eprint e) (:close c)))))))))
 
 (defn /index
   "Root route"
@@ -120,8 +123,27 @@
         ``}]
       [:main {:class "f-col fullscreen justify-content:center"
               :hx-get "/current-slide" :hx-trigger "load, click, refresh from:body"}]
+
       [:script {:src "https://unpkg.com/hyperscript.org@0.9.11"}]
+      [:script
+       {:type "text/hyperscript"}
+       ``
+       wait 1
+       eventsource Events from /events
+       end
+       ``]
+      [:script {:src "https://unpkg.com/hyperscript.org@0.9.11/dist/eventsource.js"}]
       [:script {:src "https://unpkg.com/htmx.org@1.9.6"}]]]])
+
+(defn /events
+  "SSE "
+  {:path "/events"}
+  [req _]
+  (>>> :save-connection (req :connection))
+  (merge-into (dyn :response-headers)
+              {"content-type" "text/event-stream"
+               "charset" "UTF-8"})
+  "")
 
 (defn trigger-header
   [header]
@@ -156,6 +178,13 @@
   (>>> :previous-chapter)
   (trigger-header "refresh"))
 
+(defn /reload-presentation
+  "Reloads presentation from file"
+  {:path "/reload-presentation"}
+  [&]
+  (>>> :reload-presentation)
+  (trigger-header "refresh"))
+
 (defn /navigation
   "Returns slide navigation view"
   {:path "/navigation"}
@@ -165,13 +194,6 @@
   "Returns current slide view"
   {:path "/current-slide"}
   [&] (<o> :current-slide))
-
-(defn /reload-presentation
-  "Reloads presentation from file"
-  {:path "/reload-presentation"}
-  [&]
-  (>>> :reload-presentation)
-  (trigger-header "refresh"))
 
 (def- web-server "Template server" (httpf/server))
 (httpf/add-bindings-as-routes web-server)
@@ -184,7 +206,7 @@
     (httpf/listen ws ip port 1)))
 
 (defn main [_ presentation-file]
-  (def store @{:presentation-file presentation-file :chapter 0 :slide 0})
+  (def store @{:presentation-file presentation-file :chapter 0 :slide 0 :connections @[]})
   (def supervisor (ev/chan 1024))
   (ev/go (supervise store) supervisor)
   (ev/go (web-listener "127.0.0.1" "8000") web-server supervisor)

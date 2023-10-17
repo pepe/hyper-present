@@ -30,6 +30,7 @@ jpm -l janet ./bin/dev.janet ./presentation.md
 As part of the summer semester studyblock oriented on backend development,
 I would like to add:
 
+- SSE
 - Roles: speaker, student
 - More multimedia
 - Janet playground
