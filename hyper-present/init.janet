@@ -72,57 +72,54 @@
   "Root route"
   {:path "/"}
   [_ _]
-  (comptime
-    (htmlgen/raw
-      (htmlgen/html
-        @[htmlgen/doctype-html
-          [:html {"lang" "en"}
-           [:head
-            [:meta {"charset" "UTF-8"}]
-            [:meta {"name" "viewport"
-                    "content" "width=device-width, initial-scale=1.0"}]
-            [:meta {"name" "description"
-                    "content" (string "Hyper Present - " (<o> :title))}]
-            [:title "Hyper Present"]
-            [:link {:rel "stylesheet" :href "https://unpkg.com/missing.css@1.1.1"}]
-            [:style ``
-                    :root {font-size: 48px}
-                    nav {z-index: 1; transition: opacity 250ms ease-in-out; font-size: 0.5rem}
-                    small {font-size: 0.3rem}
-                    ``]]
-           [:body
-            {:_
-             ``
-             on keyup
-               set k to the event's key
-               if k is 'ArrowRight' or k is ' ' send next to <nav div[data-role='slide'] a/>
-               else if k is 'ArrowLeft' send previous to <nav div[data-role='slide'] a/>
-               else if k is 'ArrowDown' send next to <nav div[data-role='chapter'] a/>
-               else if k is 'ArrowUp' send previous to <nav div[data-role='chapter'] a/>
-               else if k is 'r' send click to <a[data-role='reload']/>
-             ``}
-            [:nav
-             {:class "width:100% fixed f-row justify-content:space-between 
+  @[htmlgen/doctype-html
+    [:html {"lang" "en"}
+     [:head
+      [:meta {"charset" "UTF-8"}]
+      [:meta {"name" "viewport"
+              "content" "width=device-width, initial-scale=1.0"}]
+      [:meta {"name" "description"
+              "content" (string "Hyper Present - " (<o> :title))}]
+      [:title "Hyper Present"]
+      [:link {:rel "stylesheet" :href "https://unpkg.com/missing.css@1.1.1"}]
+      [:style ``
+              :root {font-size: 48px}
+              nav {z-index: 1; transition: opacity 250ms ease-in-out; font-size: 0.5rem}
+              small {font-size: 0.3rem}
+              ``]]
+     [:body
+      {:_
+       ``
+       on keyup
+         set k to the event's key
+         if k is 'ArrowRight' or k is ' ' send next to <nav div[data-role='slide'] a/>
+         else if k is 'ArrowLeft' send previous to <nav div[data-role='slide'] a/>
+         else if k is 'ArrowDown' send next to <nav div[data-role='chapter'] a/>
+         else if k is 'ArrowUp' send previous to <nav div[data-role='chapter'] a/>
+         else if k is 'r' send click to <a[data-role='reload']/>
+       ``}
+      [:nav
+       {:class "width:100% fixed f-row justify-content:space-between 
                       padding-inline align-items:baseline"
-              :hx-get "/navigation" :hx-swap "innerHtml" :hx-trigger "load, refresh from:body"
-              :_ ``
-                 init send hide to me
-                 on mouseenter or refresh send show to me
-                 on mouseleave or refresh send hide to me
-                 on show
-                   set :hidding to false
-                   show me with *opacity
-                 on hide
-                   set :hidding to true
-                   wait 1s 
-                   if :hidding 
-                     hide me with *opacity
-                   end 
-                 ``}]
-            [:main {:class "f-col fullscreen justify-content:center"
-                    :hx-get "/current-slide" :hx-trigger "load, click, refresh from:body"}]
-            [:script {:src "https://unpkg.com/hyperscript.org@0.9.11"}]
-            [:script {:src "https://unpkg.com/htmx.org@1.9.6"}]]]]))))
+        :hx-get "/navigation" :hx-swap "innerHtml" :hx-trigger "load, refresh from:body"
+        :_ ``
+           init send hide to me
+           on mouseenter or refresh send show to me
+           on mouseleave or refresh send hide to me
+           on show
+             set :hidding to false
+             show me with *opacity
+           on hide
+             set :hidding to true
+             wait 1s 
+             if :hidding 
+               hide me with *opacity
+             end 
+           ``}]
+      [:main {:class "f-col fullscreen justify-content:center"
+              :hx-get "/current-slide" :hx-trigger "load, click, refresh from:body"}]
+      [:script {:src "https://unpkg.com/hyperscript.org@0.9.11"}]
+      [:script {:src "https://unpkg.com/htmx.org@1.9.6"}]]]])
 
 (defn trigger-header
   [header]
