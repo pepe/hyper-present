@@ -2,7 +2,8 @@
 
 Yet another presentation software I have written for my studyblock teachings.
 
-Second time in Janet, this time with `spork/httpf`.
+Second time in Janet, this time with `spork/httpf` and Hypermedia systems
+(htmx, hyperscript).
 
 ## Usage
 
@@ -32,3 +33,4 @@ I would like to add:
 - Roles: speaker, student
 - More multimedia
 - Janet playground
+- State persistence

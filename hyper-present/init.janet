@@ -82,11 +82,12 @@
               "content" (string "Hyper Present - " (<o> :title))}]
       [:title "Hyper Present"]
       [:link {:rel "stylesheet" :href "https://unpkg.com/missing.css@1.1.1"}]
-      [:style ``
-              :root {font-size: 48px}
-              nav {z-index: 1; transition: opacity 250ms ease-in-out; font-size: 0.5rem}
-              small {font-size: 0.3rem}
-              ``]]
+      [:style
+       ``
+       :root {font-size: 48px}
+       nav {z-index: 1; transition: opacity 250ms ease-in-out; font-size: 0.5rem}
+       small {font-size: 0.3rem}
+       ``]]
      [:body
       {:_
        ``
@@ -102,20 +103,21 @@
        {:class "width:100% fixed f-row justify-content:space-between 
                       padding-inline align-items:baseline"
         :hx-get "/navigation" :hx-swap "innerHtml" :hx-trigger "load, refresh from:body"
-        :_ ``
-           init send hide to me
-           on mouseenter or refresh send show to me
-           on mouseleave or refresh send hide to me
-           on show
-             set :hidding to false
-             show me with *opacity
-           on hide
-             set :hidding to true
-             wait 1s 
-             if :hidding 
-               hide me with *opacity
-             end 
-           ``}]
+        :_
+        ``
+        init send hide to me
+        on mouseenter or refresh send show to me
+        on mouseleave or refresh send hide to me
+        on show
+          set :hidding to false
+          show me with *opacity
+        on hide
+          set :hidding to true
+          wait 1s
+          if :hidding
+            hide me with *opacity
+          end
+        ``}]
       [:main {:class "f-col fullscreen justify-content:center"
               :hx-get "/current-slide" :hx-trigger "load, click, refresh from:body"}]
       [:script {:src "https://unpkg.com/hyperscript.org@0.9.11"}]
